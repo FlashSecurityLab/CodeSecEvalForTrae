@@ -1,0 +1,221 @@
+{
+  "name": "CodeSecEval",
+  "displayName": "代码安全漏洞扫描插件",
+  "description": "快速扫描代码以查找安全漏洞的Trae IDE插件",
+  "version": "1.0.0",
+  "author": "CodeSecEval Team",
+  "license": "MIT",
+  "main": "dist/index.html",
+  "icon": "assets/icon.png",
+  "categories": ["Security", "Analysis", "Tools"],
+  "keywords": ["security", "vulnerability", "scan", "code-analysis", "安全扫描"],
+  "engines": {
+    "trae": ">=1.0.0"
+  },
+  "activationEvents": [
+    "onCommand:codeseceval.scan",
+    "onCommand:codeseceval.quickScan",
+    "onCommand:codeseceval.openDashboard",
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onLanguage:python",
+    "onLanguage:java",
+    "onLanguage:csharp",
+    "onLanguage:cpp",
+    "onLanguage:go",
+    "onLanguage:rust",
+    "onLanguage:php",
+    "onLanguage:ruby"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "codeseceval.scan",
+        "title": "开始安全扫描",
+        "category": "CodeSecEval",
+        "icon": "$(shield)"
+      },
+      {
+        "command": "codeseceval.quickScan",
+        "title": "快速扫描",
+        "category": "CodeSecEval",
+        "icon": "$(zap)"
+      },
+      {
+        "command": "codeseceval.openDashboard",
+        "title": "打开安全控制台",
+        "category": "CodeSecEval",
+        "icon": "$(dashboard)"
+      },
+      {
+        "command": "codeseceval.openReports",
+        "title": "查看漏洞报告",
+        "category": "CodeSecEval",
+        "icon": "$(bug)"
+      },
+      {
+        "command": "codeseceval.configureRules",
+        "title": "配置扫描规则",
+        "category": "CodeSecEval",
+        "icon": "$(settings-gear)"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "codeseceval.scan",
+          "when": "explorerResourceIsFolder",
+          "group": "security@1"
+        },
+        {
+          "command": "codeseceval.quickScan",
+          "when": "explorerResourceIsFolder",
+          "group": "security@2"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "codeseceval.scan",
+          "when": "editorHasSelection",
+          "group": "security@1"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "codeseceval.scan",
+          "when": "workspaceFolderCount > 0"
+        },
+        {
+          "command": "codeseceval.quickScan",
+          "when": "workspaceFolderCount > 0"
+        },
+        {
+          "command": "codeseceval.openDashboard"
+        },
+        {
+          "command": "codeseceval.openReports"
+        },
+        {
+          "command": "codeseceval.configureRules"
+        }
+      ]
+    },
+    "views": {
+      "explorer": [
+        {
+          "id": "codeseceval.securityView",
+          "name": "安全扫描",
+          "when": "workspaceFolderCount > 0",
+          "icon": "$(shield)"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "codeseceval",
+          "title": "CodeSecEval",
+          "icon": "$(shield)"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "CodeSecEval",
+      "properties": {
+        "codeseceval.autoScan": {
+          "type": "boolean",
+          "default": false,
+          "description": "自动扫描文件变更"
+        },
+        "codeseceval.scanOnSave": {
+          "type": "boolean",
+          "default": true,
+          "description": "保存文件时自动扫描"
+        },
+        "codeseceval.excludePatterns": {
+          "type": "array",
+          "default": ["node_modules", "dist", "build", ".git"],
+          "description": "排除的文件或目录模式"
+        },
+        "codeseceval.maxFileSize": {
+          "type": "number",
+          "default": 1048576,
+          "description": "最大扫描文件大小（字节）"
+        },
+        "codeseceval.severity.showInfo": {
+          "type": "boolean",
+          "default": true,
+          "description": "显示信息级别的问题"
+        },
+        "codeseceval.severity.showLow": {
+          "type": "boolean",
+          "default": true,
+          "description": "显示低危级别的问题"
+        },
+        "codeseceval.severity.showMedium": {
+          "type": "boolean",
+          "default": true,
+          "description": "显示中危级别的问题"
+        },
+        "codeseceval.severity.showHigh": {
+          "type": "boolean",
+          "default": true,
+          "description": "显示高危级别的问题"
+        },
+        "codeseceval.severity.showCritical": {
+          "type": "boolean",
+          "default": true,
+          "description": "显示严重级别的问题"
+        }
+      }
+    },
+    "problemMatchers": [
+      {
+        "name": "codeseceval",
+        "owner": "codeseceval",
+        "fileLocation": ["relative", "${workspaceFolder}"],
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+):\\s+(error|warning|info)\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "build": "npm run build:web",
+    "build:web": "vite build",
+    "dev": "vite",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.8.0",
+    "antd": "^5.12.0",
+    "axios": "^1.6.2"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "@typescript-eslint/parser": "^6.14.0",
+    "@vitejs/plugin-react": "^4.2.1",
+    "eslint": "^8.55.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.5",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.8"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/codeseceval.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-org/codeseceval/issues"
+  },
+  "homepage": "https://github.com/your-org/codeseceval#readme"
+}
